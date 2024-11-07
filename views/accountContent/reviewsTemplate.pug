@@ -1,0 +1,18 @@
+extends ../account
+
+block sideContent
+  section.reviews__block
+    .reviews__block-info 
+      h2 Tour Name
+      h2 Your Review
+      h2 Your Rating
+    each oneReview of reviews
+      .reviews__card-vw
+        .reviews__card-title
+          h3= oneReview.tour.name
+        .reviews__card-review
+          p= oneReview.review
+        .reviews__card-rating 
+          p= oneReview.rating
+          svg.reviews__star(class='reviews__star--active')
+            use(xlink:href='/img/icons.svg#icon-star')
