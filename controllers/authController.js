@@ -23,18 +23,14 @@ const createSendToken = (user, statusCode, res) => {
   // sign token based on user id
   const token = signToken(user._id);
 
-  // create cookie options
-  const cookieOptions = {
+  // set the actual token
+  res.cookie('jwt', token, {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60 * 60 * 24
     ),
-    httpOnly: true // allow to access token only from server
-  };
-  // secure cookie options in production env
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // only use 'https' protocol
-
-  // set the actual token
-  res.cookie('jwt', token, cookieOptions);
+    httpOnly: true, // allow to access token only from server
+    secure: req.headers['x-forwarded-proto'] === 'https' || req.secure
+  });
 
   // remove the password from the output (json)
   user.password = undefined;
