@@ -18,9 +18,6 @@ const bookBtn = document.getElementById('book-tour');
 const formReview = document.querySelector('.form__review-cu');
 const userPhoto = document.querySelector('.form__user-photo');
 const saveBtns = document.querySelectorAll('label.container__fav input');
-const navAccountLinks = document.querySelectorAll(
-  '.user-view__menu > .side-nav li'
-);
 
 // DELEGATION
 if (mapBox) {
@@ -181,45 +178,5 @@ if (saveBtns) {
       }
       localStorage.setItem('favoriteTours', JSON.stringify(favTours));
     });
-  });
-}
-
-if (navAccountLinks) {
-  const pathNameUrl = window.location.pathname;
-  let index = 0;
-  switch (pathNameUrl) {
-    case '/me':
-      index = 0;
-      break;
-    case '/my-tours':
-      index = 1;
-      break;
-    case '/my-reviews':
-      index = 2;
-      break;
-    case '/my-biling':
-      index = 3;
-      break;
-    case '/manage-tours':
-      index = 4;
-      break;
-    case '/manage-users':
-      index = 5;
-      break;
-    case '/manage-reviews':
-      index = 6;
-      break;
-    case '/manage-briefcase':
-      index = 7;
-      break;
-
-    default:
-      console.log('Something went wrong!!');
-      break;
-  }
-  navAccountLinks.forEach((link, i) => {
-    if (i === index) {
-      link.classList.add('side-nav--active');
-    }
   });
 }
