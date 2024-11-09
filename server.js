@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// ^ caught any exception from the server
+// info: caught any exception from the server
 // errors with misspeled or undefined property
 process.on('uncaughtException', (err) => {
   console.error('ERROR:', err.message);
@@ -12,19 +12,19 @@ process.on('uncaughtException', (err) => {
 require('dotenv').config({ path: './config.env' });
 const app = require('./app');
 
-// * use mongoDB link to connect with mongoose module
+// info: use mongoDB link to connect with mongoose module
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 );
 
-// * handle errors during mongodb connection
+// info: handle errors during mongodb connection
 // mongoose.connection.on('error', (err) => {
 //   console.error('💥ERROR:', err.name, err.message);
 //   process.exit(1); // exit the process with failure
 // });
 
-// * connecting to mongodb using mongoose
+// info: connecting to mongodb using mongoose
 mongoose.connect(DB).then(() => console.log('DB connected.'));
 
 const port = process.env.PORT;
@@ -32,7 +32,7 @@ const server = app.listen(port, () => {
   console.log(`Server start on port ${port}.`);
 });
 
-// ^ Handle outer errors of the app
+// info: Handle outer errors of the app
 // wrong with connection (pass, db, login, connection, net)
 process.on('unhandledRejection', (err) => {
   // console.error(err.name, err.message);
@@ -40,5 +40,14 @@ process.on('unhandledRejection', (err) => {
 
   server.close(() => {
     process.exit(1);
+  });
+});
+
+// info: enable SIGTERM to finish all the processes and requests then it will authomatically use SIGKILL to force shutdown all the left processes if remain
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM Recieved. Shutting down gracefuly...');
+  server.close(() => {
+    console.log('Closing all remaining processes.');
+    process.exit(0);
   });
 });
