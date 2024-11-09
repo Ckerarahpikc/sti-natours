@@ -6,7 +6,6 @@ const rateLimit = require('express-rate-limit');
 const sanitizeMongo = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
-x;
 require('dotenv').config({ path: './config-dev.env' });
 
 const globalErrorHandler = require('./controllers/globalErrorController');
