@@ -127,7 +127,6 @@ if (formReview) {
     const review = document.getElementById('review-text');
     const rating = document.querySelector('input[name="rating"]:checked');
     const btnSend = formReview.querySelector('.btn__send');
-    const btnUpdate = formReview.querySelector('.btn__update');
     const btnCreateUpdate = formReview.querySelector('.btn-cu');
 
     // info: testing input data
@@ -139,15 +138,13 @@ if (formReview) {
     data.rating = rating.value;
 
     btnSend.textContent = 'Sending...';
-    btnUpdate.textContent = 'Updating...';
     // info: create new review
-    // await createUpdateReview('create', data, tourId);
+    await createUpdateReview('create', data, tourId);
     document
       .querySelectorAll('input[name="rating"]:checked')
       .forEach((radio) => (radio.checked = false));
     review.value = '';
     btnSend.textContent = 'Send';
-    btnUpdate.textContent = 'Updated';
   });
 }
 
