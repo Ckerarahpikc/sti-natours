@@ -26,7 +26,7 @@ const securityMiddleware = helmet({
       'connect-src': [
         "'self'",
         'https://*.mapbox.com',
-        'http://127.0.0.1:3000',
+        'http://127.0.0.1:7004',
         'ws://localhost:*'
       ] // localhost for devs and mapbox for production
     }

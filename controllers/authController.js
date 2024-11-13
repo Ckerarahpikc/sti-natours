@@ -28,8 +28,7 @@ const createSendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 1000 * 60 * 60 * 24
     ),
-    httpOnly: true, // allow to access token only from server
-    secure: req.headers['x-forwarded-proto'] === 'https' || req.secure
+    httpOnly: true // allow to access token only from server
   });
 
   // remove the password from the output (json)

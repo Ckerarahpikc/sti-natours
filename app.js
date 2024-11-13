@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const sanitizeMongo = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 require('dotenv').config({ path: './config-dev.env' });
 
 const globalErrorHandler = require('./controllers/globalErrorController');
@@ -22,7 +23,7 @@ const bookingRouter = require('./routes/bookingRoutes');
 const app = express();
 
 // enable MIM
-app.enable('trust proxy');
+// app.enable('trust proxy');
 
 // set engine
 app.set('views', path.join(__dirname, 'views'));
@@ -32,6 +33,9 @@ app.use(express.static(path.join(__dirname, '/public')));
 // ====================== middlewares (security) ======================
 // Set security HTTP headers (helmet)
 app.use(securityMiddleware);
+
+// Enable CORS
+app.use(cors());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
