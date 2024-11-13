@@ -19,6 +19,8 @@ const userRouter = require('./routes/userRoutes');
 const reviewsRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+//  ================ importing controllers ===========
+const bookingController = require('./controllers/bookingController');
 
 const app = express();
 
@@ -73,6 +75,14 @@ app.use(
 
 // Compresser
 app.use(compression());
+
+// checkout session endpoint
+// note: this route is placed before the body is parsed to JSON `e.g. app.use(express.json())`, because Stripe actualy needs the raw body in order to perform this route, so basicaly as a string and not json
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
 
 // ==================  middlewares (parsing) ==================
 // Body parser, reading data from body into req.body

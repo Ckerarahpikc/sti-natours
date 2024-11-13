@@ -25,9 +25,7 @@ router
 router.use(authController.isLoggedIn);
 
 // info: view routes
-router
-  .route('/')
-  .get(bookingController.createBookings, viewController.getOverview);
+router.route('/').get(viewController.getOverview);
 router.route('/tour/:tourName').get(viewController.getTour);
 
 // info: authentication routes
