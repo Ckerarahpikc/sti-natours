@@ -34,8 +34,10 @@ app.use(express.static(path.join(__dirname, '/public')));
 // Set security HTTP headers (helmet)
 app.use(securityMiddleware);
 
-// Enable CORS
+// Implement CORS
 app.use(cors());
+
+app.options('*', cors());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
