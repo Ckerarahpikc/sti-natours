@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 // errors with misspeled or undefined property
 process.on('uncaughtException', (err) => {
   console.error('ERROR:', err.message);
-  console.error('STACK:', err.stack);
   console.log('UNCAUGHT EXCEPTION.');
   process.exit(1); // 1 - failure code / 0 - success code
 });
@@ -27,8 +26,7 @@ const DB = process.env.DATABASE.replace(
 // info: connecting to mongodb using mongoose
 mongoose.connect(DB).then(() => console.log('DB connected.'));
 
-const port = process.env.PORT;
-const server = app.listen(port, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log(`Server start on port ${port}.`);
 });
 
