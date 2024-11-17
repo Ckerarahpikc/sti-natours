@@ -32,7 +32,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
           product_data: {
             name: `${tour.name} Tour`,
             description: tour.summary,
-            images: ['https://ibb.co/XxwkJCX']
+            images: [
+              `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`
+            ]
           },
           unit_amount: tour.price * 100 // expected to be in cents
         },
@@ -60,10 +62,12 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 //   res.redirect(req.originalUrl.split('?')[0]);
 // });
 
-const createBookingCkechout = async (session) => {
+const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
   const user = (await User.findOne({ email: session.customer_email })).id;
-  const price = session.line_items[0].price_data.unit_amount / 100;
+  const price = session.amount_total / 100;
+
+  console.log('contenthere:', tour, user, price)
 
   await Booking.create({ tour, user, price });
 };
@@ -71,23 +75,30 @@ const createBookingCkechout = async (session) => {
 exports.webhookCheckout = (req, res, next) => {
   const signature = req.headers['stripe-signature'];
 
-  let event;
+  if (!signature) {
+    console.error('Signature missing in headers!');
+    return res
+      .status(400)
+      .send('No stripe-signature header value was provided.');
+  }
+
   try {
-    event = stripe.webhooks.constructEvent(
+    const event = stripe.webhooks.constructEvent(
       req.body,
       signature,
       process.env.STRIPE_SIGNING_SECRET
     );
+
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      createBookingCheckout(session);
+    }
+
+    res.status(200).send({ received: true });
   } catch (err) {
-    return res.status(400).send(`Webhook error: ${err.message}`);
+    console.error('Webhook Error:', err.message);
+    res.status(400).send(`Webhook error: ${err.message}`);
   }
-
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
-    createBookingCkechout(session);
-  }
-
-  res.status(200).json({ recieved: true });
 };
 
 exports.getBookings = getAll(Booking);

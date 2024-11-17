@@ -25,39 +25,39 @@ const bookingController = require('./controllers/bookingController');
 const app = express();
 
 // enable MIM
-// app.enable('trust proxy');
+// If using Heroku or similar proxy service
+app.set('trust proxy', 1);
 
 // set engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '/public')));
 
-// ====================== middlewares (security) ======================
+// ==================== middlewares (security) ====================
 // Set security HTTP headers (helmet)
 app.use(securityMiddleware);
 
-// Implement CORS
+// Middleware
 app.use(cors());
-
 app.options('*', cors());
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+app.use(compression());
 
 // Limit request from same API (express-rate-limit)
-const limit = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: "You've reached the rate limit. Try again after 1h."
-});
-app.use('/api', limit);
+app.use(
+  '/api',
+  rateLimit({
+    max: 100,
+    windowMs: 60 * 60 * 1000,
+    message: "You've reached the rate limit. Try again after 1h."
+  })
+);
 
 // Sanitization against NoSQL query injection (express-mongo-sanitize)
 app.use(sanitizeMongo());
 
-// Sanitization against XSS attacks (xss)
-app.use(sanitizeBodyWithWhitelist);
+// Cookie parser, reading the req.cookie
+app.use(cookieParser());
 
 // Prevent query pullution
 app.use(
@@ -76,6 +76,8 @@ app.use(
 // Compresser
 app.use(compression());
 
+// ==================== routes ====================
+// note: to be able to use 'req.ip' u need to set 'app.enable('trust proxy')' firstly
 // checkout session endpoint
 // note: this route is placed before the body is parsed to JSON `e.g. app.use(express.json())`, because Stripe actualy needs the raw body in order to perform this route, so basicaly as a string and not json
 app.post(
@@ -84,30 +86,11 @@ app.post(
   bookingController.webhookCheckout
 );
 
-// ==================  middlewares (parsing) ==================
+// ==================  bodyparser ==================
 // Body parser, reading data from body into req.body
-app.use(
-  express.json({
-    limit: '50kb',
-    verify: (req, res, buf, encoding) => {
-      if (buf[0] !== 0x7b && buf[0] !== 0x5b) {
-        throw new Error('Invalid JSON format.');
-      }
-    }
-  })
-);
-// Cookie parser, reading the req.cookie
-app.use(cookieParser());
-
-// ==================== routes ====================
-app.use((req, res, next) => {
-  // req.requestTime = new Date().toISOString();
-  // console.log('COOKIES:', req.cookies);
-
-  // note: to be able to use 'req.ip' u need to set 'app.enable('trust proxy')' firstly
-  // console.log('request ip:', req.ip);
-  next();
-});
+app.use(express.json({ limit: '50kb' }));
+// Sanitization against XSS attacks (xss)
+app.use(sanitizeBodyWithWhitelist);
 
 app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
