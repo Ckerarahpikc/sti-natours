@@ -7,6 +7,15 @@ const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const SetAppError = require('../utils/errorConfig');
 
+exports.alert = (req, res, next) => {
+  const { alert } = req.query;
+  if (alert === 'booking') {
+    res.locals.alert =
+      "Your booking was successfull! Please check your email for configuration. If your booking doesn't appear here immediately, don't come back, this is just a scam.";
+  }
+  next();
+};
+
 exports.getOverview = catchAsync(async (req, res) => {
   // info: here I want to add a simple mark (that they've purchased) on those tours that user bought
   let userBookings;

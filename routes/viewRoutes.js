@@ -5,6 +5,8 @@ const viewController = require('../controllers/viewController');
 const authController = require('../controllers/authController');
 const bookingController = require('../controllers/bookingController');
 
+router.use(viewController.alert);
+
 router.route('/me').get(authController.protect, viewController.userAccount);
 router
   .route('/my-tours')

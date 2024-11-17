@@ -4,7 +4,7 @@ export const hideAlert = () => {
   if (el) el.parentElement.removeChild(el);
 };
 
-export const showAlert = (type, message) => {
+export const showAlert = (type, message, ms = 7) => {
   hideAlert();
   const div = document.createElement('div');
 
@@ -18,5 +18,5 @@ export const showAlert = (type, message) => {
 
   setTimeout(() => {
     hideAlert();
-  }, 4000);
+  }, ms * 1000);
 };

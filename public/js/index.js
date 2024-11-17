@@ -18,6 +18,7 @@ const bookBtn = document.getElementById('book-tour');
 const formReview = document.querySelector('.form__review-cu');
 const userPhoto = document.querySelector('.form__user-photo');
 const saveBtns = document.querySelectorAll('label.container__fav input');
+const alertBodyMessage = document.querySelector('body').dataset.alert;
 
 // DELEGATION
 if (mapBox) {
@@ -176,4 +177,8 @@ if (saveBtns) {
       localStorage.setItem('favoriteTours', JSON.stringify(favTours));
     });
   });
+}
+
+if (alertBodyMessage) {
+  showAlert('success', alertBodyMessage, 20);
 }
