@@ -8,7 +8,9 @@ const catchAsync = require('../utils/catchAsync');
 const SetAppError = require('../utils/errorConfig');
 
 exports.alert = (req, res, next) => {
-  const { alert } = req.query;
+  const { alert } = req.parmas;
+  console.log('param:', req.params.alert); // debug: remove this
+  console.log('query:', req.query.alert); // debug: remove this
   if (alert === 'booking') {
     res.locals.alert =
       "Your booking was successfull! Please check your email for configuration. If your booking doesn't appear here immediately, don't come back, this is just a scam.";
