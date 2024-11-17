@@ -8,8 +8,7 @@ const catchAsync = require('../utils/catchAsync');
 const SetAppError = require('../utils/errorConfig');
 
 exports.alert = (req, res, next) => {
-  const { alert } = req.parmas;
-  console.log('param:', req.params.alert); // debug: remove this
+  const { alert } = req.query;
   console.log('query:', req.query.alert); // debug: remove this
   if (alert === 'booking') {
     res.locals.alert =
