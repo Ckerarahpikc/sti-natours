@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const compression = require('compression');
 const path = require('path');
 const morgan = require('morgan');
@@ -91,6 +92,14 @@ app.post(
 app.use(express.json({ limit: '50kb' }));
 // Sanitization against XSS attacks (xss)
 app.use(sanitizeBodyWithWhitelist);
+// Configure express-session
+app.use(
+  session({
+    secret: process.env.EXPRESS_SECRET_SESSION,
+    saveUninitialized: false,
+    resave: false
+  })
+);
 
 app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);

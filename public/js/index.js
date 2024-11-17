@@ -19,7 +19,6 @@ const formReview = document.querySelector('.form__review-cu');
 const userPhoto = document.querySelector('.form__user-photo');
 const saveBtns = document.querySelectorAll('label.container__fav input');
 const alertBodyMessage = document.querySelector('body').dataset.alert;
-console.log('message:', alertBodyMessage); // debug: remove this
 
 // DELEGATION
 if (mapBox) {

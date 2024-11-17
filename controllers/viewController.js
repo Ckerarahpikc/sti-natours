@@ -9,11 +9,12 @@ const SetAppError = require('../utils/errorConfig');
 
 exports.alert = (req, res, next) => {
   const { alert } = req.query;
-  console.log('query:', req.query.alert); // debug: remove this
   if (alert === 'booking') {
-    res.locals.alert =
+    req.session.alert =
       "Your booking was successfull! Please check your email for configuration. If your booking doesn't appear here immediately, don't come back, this is just a scam.";
   }
+  res.locals.alert = req.session.alert || null;
+  if (req.session.alert) req.session.alert = null;
   next();
 };
 
