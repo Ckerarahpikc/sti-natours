@@ -97,7 +97,8 @@ app.use(
   session({
     secret: process.env.EXPRESS_SECRET_SESSION,
     saveUninitialized: false,
-    resave: false
+    resave: false,
+    cookie: { secure: process.env.NODE_ENV === 'production' ? true : false }
   })
 );
 
